@@ -1,0 +1,17 @@
+{
+  "name": "gocial-server",
+  "version": "1.0.0",
+  "description": "The server for Gocial",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {},
+  "keywords": [],
+  "author": "M.D. Walters",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "simple-json-db": "^2.0.0",
+    "uuid": "^9.0.0",
+    "ws": "^8.11.0"
+  }
+}
