@@ -1,7 +1,7 @@
 import { WebSocketServer } from "ws";
 import JSONdb from "simple-json-db";
 import bcrypt from "bcrypt";
-import { v5 as uuid } from "uuid";
+import { v4 as uuid } from "uuid";
 
 const wss = new WebSocketServer({ port: 8080 });
 const db = new JSONdb("db.json");
