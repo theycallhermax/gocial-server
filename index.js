@@ -1,4 +1,4 @@
-import {WebSocketServer} from "ws";
+import { WebSocketServer } from "ws";
 import JSONdb from "simple-json-db";
 import bcrypt from "bcrypt";
 import { v5 as uuid } from "uuid";
