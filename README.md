@@ -1,5 +1,5 @@
 # Gocial Server
-The server (probably) for Gocial
+The server for Gocial
 ## Running
 ```bash
 npm install
