@@ -79,7 +79,7 @@ wss.on("connection", function connection(ws) {
         } else if (JSON.parse(data).cmd === "ping") {
             ws.send(JSON.stringify({"cmd": "ping", "val": "OK"}));
         } else if (JSON.parse(data).cmd === "home") {
-            ws.send(JSON.stringify({"cmd": "home", "val": db.get("_home"), "len": db.get("_home").length}));
+            ws.send(JSON.stringify({"cmd": "home", "val": db.get("_home"), "len": (db.get("_home").length - 1)}));
         } else if (JSON.parse(data).cmd === "set_quote") {
             var users = db.get("_users");
             var hasUser = false;
