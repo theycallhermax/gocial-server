@@ -10,7 +10,17 @@ wss.on("connection", function connection(ws) {
     ws.on("message", function message(data) {
         console.log(`New message: ${data}`);
         if (JSON.parse(data).cmd === "post") {
-            bcrypt.compare(JSON.parse(data).password, db.get(JSON.parse(data).username).password, function(err, result) {
+            var users = db.get("_users");
+            var hasUser = false;
+            let i = 0;
+            for (i in users) {
+                if (users[i].username === JSON.parse(data).username) {
+                    var hasUser = true;
+                    break;
+                }
+            }
+            
+            bcrypt.compare(JSON.parse(data).password, users[i].password, function(err, result) {
                 if (result == true) {
                     ws.send(JSON.stringify({"cmd": "ok"}));
                     var home = db.get("_home");
@@ -24,19 +34,41 @@ wss.on("connection", function connection(ws) {
                 }
             });
         } else if (JSON.parse(data).cmd === "signup") {
-            if (db.has(JSON.parse(data).username)) {
+            var users = db.get("_users");
+            var hasUser = false;
+            let i = 0;
+            for (i in users) {
+                if (users[i].username === JSON.parse(data).username) {
+                    var hasUser = true;
+                    break;
+                }
+            }
+            
+            if (!(hasUser)) {
                 ws.send(JSON.stringify({"cmd": "status", "val": "Account Exists"}));
             } else {
                 bcrypt.hash(JSON.parse(data).password, 14, function(err, hash) {
-                    db.set(JSON.parse(data).username, {"password": hash, "uuid": uuid(), "created": new Date().getTime(), "quote": null});
+                    var users = db.get("_users");
+                    users.push({"username": JSON.parse(data).username, "password": hash, "uuid": uuid(), "created": new Date().getTime(), "quote": null});
+                    db.set("_users", users);
                     ws.send(JSON.stringify({"cmd": "ok"}));
                 });
             }
         } else if (JSON.parse(data).cmd === "login") {
-            if (!(db.has(JSON.parse(data).username))) {
+            var users = db.get("_users");
+            var hasUser = false;
+            let i = 0;
+            for (i in users) {
+                if (users[i].username === JSON.parse(data).username) {
+                    var hasUser = true;
+                    break;
+                }
+            }
+            
+            if (!(hasUser)) {
                 ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Username or Password"}));
             } else {
-                bcrypt.compare(JSON.parse(data).password, db.get(JSON.parse(data).username).password, function(err, result) {
+                bcrypt.compare(JSON.parse(data).password, db.get("_users")[i].password, function(err, result) {
                     if (result == true) {
                         ws.send(JSON.stringify({"cmd": "ok"}));
                     } else {
@@ -49,14 +81,23 @@ wss.on("connection", function connection(ws) {
         } else if (JSON.parse(data).cmd === "home") {
             ws.send(JSON.stringify({"cmd": "home", "val": db.get("_home"), "len": db.get("_home").length}));
         } else if (JSON.parse(data).cmd === "set_quote") {
-            if (!(db.has(JSON.parse(data).username))) {
+            var users = db.get("_users");
+            var hasUser = false;
+            let i = 0;
+            for (i in users) {
+                if (users[i].username === JSON.parse(data).username) {
+                    var hasUser = true;
+                    break;
+                }
+            }
+            
+            if (hasUser) {
                 ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Username or Password"}));
             } else {
-                bcrypt.compare(JSON.parse(data).password, db.get(JSON.parse(data).username).password, function(err, result) {
+                bcrypt.compare(JSON.parse(data).password, users[i].password, function(err, result) {
                     if (result == true) {
-                        var user = db.get(JSON.parse(data).username);
-                        user.quote = JSON.parse(data).val;
-                        db.set(JSON.parse(data).username, user);
+                        users[i].quote = JSON.parse(data).val;
+                        db.set("_users", users);
                         ws.send(JSON.stringify({"cmd": "ok"}));
                     } else {
                         ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Username or Password"}));  
