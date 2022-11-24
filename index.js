@@ -49,7 +49,7 @@ wss.on("connection", function connection(ws) {
             } else {
                 bcrypt.hash(JSON.parse(data).password, 14, function(err, hash) {
                     var users = db.get("_users");
-                    users.push({"username": JSON.parse(data).username, "password": hash, "uuid": uuid(), "created": new Date().getTime(), "quote": null});
+                    users.push({"username": JSON.parse(data).username, "password": hash, "uuid": uuid(), "created": new Date().getTime()});
                     db.set("_users", users);
                     ws.send(JSON.stringify({"cmd": "ok"}));
                 });
@@ -80,30 +80,6 @@ wss.on("connection", function connection(ws) {
             ws.send(JSON.stringify({"cmd": "ping", "val": "OK"}));
         } else if (JSON.parse(data).cmd === "home") {
             ws.send(JSON.stringify({"cmd": "home", "val": db.get("_home"), "len": (db.get("_home").length - 1)}));
-        } else if (JSON.parse(data).cmd === "set_quote") {
-            var users = db.get("_users");
-            var hasUser = false;
-            let i = 0;
-            for (i in users) {
-                if (users[i].username === JSON.parse(data).username) {
-                    var hasUser = true;
-                    break;
-                }
-            }
-            
-            if (hasUser) {
-                ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Username or Password"}));
-            } else {
-                bcrypt.compare(JSON.parse(data).password, users[i].password, function(err, result) {
-                    if (result == true) {
-                        users[i].quote = JSON.parse(data).val;
-                        db.set("_users", users);
-                        ws.send(JSON.stringify({"cmd": "ok"}));
-                    } else {
-                        ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Username or Password"}));  
-                    }
-                });
-            }
         } else {
             ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Request"}));
         }
