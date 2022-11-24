@@ -12,11 +12,11 @@ Then connect to `wss://localhost:3000/` with a WebSocket client.
 #### Log in
 Checks to see if the user exists
 
-`{"cmd": "login", "username": "[username]", "password": "[password]}"`
+`{"cmd": "login", "username": "[username]", "password": "[password]"}`
 #### Sign up
 Creates a new user
 
-`{"cmd": "signup", "username": "[username]", "password": "[password]}"`
+`{"cmd": "signup", "username": "[username]", "password": "[password]"}`
 #### Home
 Gets a list of posts
 
