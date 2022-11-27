@@ -27,7 +27,7 @@ wss.on("connection", function connection(ws) {
                     home.push(`${JSON.parse(data).username}: ${JSON.parse(data).val}`);
                     users[i].posts.push(`${JSON.parse(data).username}: ${JSON.parse(data).val}`);
                     db.set("_home", home);
-                    db.set("_users", posts);
+                    db.set("_users", users);
                     wss.clients.forEach(function each(client) {
                         client.send(JSON.stringify({"cmd": "message", "username": JSON.parse(data).username, "val": JSON.parse(data).val}));
                     });
@@ -46,7 +46,7 @@ wss.on("connection", function connection(ws) {
                 }
             }
             
-            if (!(hasUser)) {
+            if (hasUser) {
                 ws.send(JSON.stringify({"cmd": "status", "val": "Account Exists"}));
             } else {
                 bcrypt.hash(JSON.parse(data).password, 14, function(err, hash) {
