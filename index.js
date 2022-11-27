@@ -24,9 +24,8 @@ wss.on("connection", function connection(ws) {
                 if (result == true) {
                     ws.send(JSON.stringify({"cmd": "ok"}));
                     var home = db.get("_home");
-                    var posts = db.get("_users")[i].posts;
                     home.push(`${JSON.parse(data).username}: ${JSON.parse(data).val}`);
-                    posts.push(`${JSON.parse(data).username}: ${JSON.parse(data).val}`);
+                    users[i].posts.push(`${JSON.parse(data).username}: ${JSON.parse(data).val}`);
                     db.set("_home", home);
                     db.set("_users", posts);
                     wss.clients.forEach(function each(client) {
@@ -51,7 +50,6 @@ wss.on("connection", function connection(ws) {
                 ws.send(JSON.stringify({"cmd": "status", "val": "Account Exists"}));
             } else {
                 bcrypt.hash(JSON.parse(data).password, 14, function(err, hash) {
-                    var users = db.get("_users");
                     users.push({"username": JSON.parse(data).username, "password": hash, "uuid": uuid(), "created": new Date().getTime(), "posts": []});
                     db.set("_users", users);
                     ws.send(JSON.stringify({"cmd": "ok"}));
