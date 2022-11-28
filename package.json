@@ -4,7 +4,9 @@
   "description": "The server for Gocial",
   "main": "index.js",
   "type": "module",
-  "scripts": {},
+  "scripts": {
+    "start": "node ."
+  },
   "keywords": [],
   "author": "M.D. Walters",
   "license": "MIT",
@@ -13,5 +15,14 @@
     "simple-json-db": "^2.0.0",
     "uuid": "^9.0.0",
     "ws": "^8.11.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdwalters/gocial-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mdwalters/gocial-server/issues"
+  },
+  "homepage": "https://github.com/mdwalters/gocial-server#readme"
 }
