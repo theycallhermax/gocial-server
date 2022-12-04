@@ -80,7 +80,7 @@ wss.on("connection", function connection(ws) {
         } else if (JSON.parse(data).cmd === "ping") {
             ws.send(JSON.stringify({"cmd": "ping", "val": "OK"}));
         } else if (JSON.parse(data).cmd === "home") {
-            ws.send(JSON.stringify({"cmd": "home", "val": db.get("_home"), "len": (db.get("_home").length - 1)}));
+            ws.send(JSON.stringify({"cmd": "home", "val": db.get("_home"), "len": db.get("_home").length}));
         } else {
             ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Request"}));
         }
