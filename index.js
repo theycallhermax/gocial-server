@@ -25,9 +25,7 @@ wss.on("connection", function connection(ws) {
                     ws.send(JSON.stringify({"cmd": "ok"}));
                     var home = db.get("_home");
                     home.push({"username": JSON.parse(data).username, "content": JSON.parse(data).val, "uuid": uuid()});
-                    users[i].posts.push({"username": JSON.parse(data).username, "content": JSON.parse(data).val, "uuid": db.get("_home")[db.get("_home").length].uuid});
                     db.set("_home", home);
-                    db.set("_users", users);
                     wss.clients.forEach(function each(client) {
                         client.send(JSON.stringify({"cmd": "message", "username": JSON.parse(data).username, "val": JSON.parse(data).val}));
                     });
@@ -50,7 +48,7 @@ wss.on("connection", function connection(ws) {
                 ws.send(JSON.stringify({"cmd": "status", "val": "Account Exists"}));
             } else {
                 bcrypt.hash(JSON.parse(data).password, 14, function(err, hash) {
-                    users.push({"username": JSON.parse(data).username, "password": hash, "uuid": uuid(), "created": new Date().getTime(), "posts": []});
+                    users.push({"username": JSON.parse(data).username, "password": hash, "uuid": uuid(), "created": new Date().getTime()});
                     db.set("_users", users);
                     ws.send(JSON.stringify({"cmd": "ok"}));
                 });
