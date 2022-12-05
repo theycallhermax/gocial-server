@@ -24,7 +24,7 @@ wss.on("connection", function connection(ws) {
                 if (result == true) {
                     ws.send(JSON.stringify({"cmd": "ok"}));
                     var home = db.get("_home");
-                    home.push({"username": JSON.parse(data).username, "content": JSON.parse(data).val, "uuid": uuid()});
+                    home.push({"username": JSON.parse(data).username, "content": JSON.parse(data).val, "uuid": uuid(), "created": new Date().getTime()});
                     db.set("_home", home);
                     wss.clients.forEach(function each(client) {
                         client.send(JSON.stringify({"cmd": "message", "username": JSON.parse(data).username, "val": JSON.parse(data).val}));
