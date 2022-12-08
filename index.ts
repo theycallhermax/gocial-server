@@ -7,20 +7,21 @@ const wss = new WebSocketServer({ port: 8080 });
 const db = new JSONdb("db.json");
 
 wss.on("connection", function connection(ws) {
-    ws.on("message", function message(data) {
+    ws.on("message", function message(data: any) {
+        var data: any = JSON.parse(data);
         console.log(`New message: ${data}`);
-        if (JSON.parse(data).cmd === "post") {
-            var users = db.get("_users");
-            var hasUser = false;
-            let i = 0;
+        if (data.cmd === "post") {
+            var users: any = db.get("_users");
+            var hasUser: boolean = false;
+            let i: number = 0;
             for (i in users) {
                 if (users[i].username === JSON.parse(data).username) {
-                    var hasUser = true;
+                    var hasUser: boolean = true;
                     break;
                 }
             }
             
-            bcrypt.compare(JSON.parse(data).password, users[i].password, function(err, result) {
+            bcrypt.compare(data.password, users[i].password, function(err, result) {
                 if (result == true) {
                     ws.send(JSON.stringify({"cmd": "ok"}));
                     var home = db.get("_home");
@@ -33,13 +34,13 @@ wss.on("connection", function connection(ws) {
                     ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Username or Password"}));  
                 }
             });
-        } else if (JSON.parse(data).cmd === "signup") {
-            var users = db.get("_users");
-            var hasUser = false;
-            let i = 0;
+        } else if (data.cmd === "signup") {
+            var users: any = db.get("_users");
+            var hasUser: boolean = false;
+            let i: number = 0;
             for (i in users) {
                 if (users[i].username === JSON.parse(data).username) {
-                    var hasUser = true;
+                    var hasUser: boolean = true;
                     break;
                 }
             }
@@ -47,18 +48,18 @@ wss.on("connection", function connection(ws) {
             if (hasUser) {
                 ws.send(JSON.stringify({"cmd": "status", "val": "Account Exists"}));
             } else {
-                bcrypt.hash(JSON.parse(data).password, 14, function(err, hash) {
-                    users.push({"username": JSON.parse(data).username, "password": hash, "uuid": uuid(), "created": new Date().getTime()});
+                bcrypt.hash(data.password, 14, function(err, hash) {
+                    users.push({"username": data.username, "password": hash, "uuid": uuid(), "created": new Date().getTime()});
                     db.set("_users", users);
                     ws.send(JSON.stringify({"cmd": "ok"}));
                 });
             }
-        } else if (JSON.parse(data).cmd === "login") {
-            var users = db.get("_users");
-            var hasUser = false;
-            let i = 0;
+        } else if (data.cmd === "login") {
+            var users: any = db.get("_users");
+            var hasUser: boolean = false;
+            let i: number = 0;
             for (i in users) {
-                if (users[i].username === JSON.parse(data).username) {
+                if (users[i].username === data.username) {
                     var hasUser = true;
                     break;
                 }
@@ -67,7 +68,7 @@ wss.on("connection", function connection(ws) {
             if (!(hasUser)) {
                 ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Username or Password"}));
             } else {
-                bcrypt.compare(JSON.parse(data).password, db.get("_users")[i].password, function(err, result) {
+                bcrypt.compare(data.password, db.get("_users")[i].password, function(err, result) {
                     if (result == true) {
                         ws.send(JSON.stringify({"cmd": "ok"}));
                     } else {
@@ -75,9 +76,9 @@ wss.on("connection", function connection(ws) {
                     }
                 });
             }
-        } else if (JSON.parse(data).cmd === "ping") {
+        } else if (data.cmd === "ping") {
             ws.send(JSON.stringify({"cmd": "ping", "val": "OK"}));
-        } else if (JSON.parse(data).cmd === "home") {
+        } else if (data.cmd === "home") {
             ws.send(JSON.stringify({"cmd": "home", "val": db.get("_home"), "len": (db.get("_home").length - 1)}));
         } else {
             ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Request"}));

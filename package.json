@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "The server for Gocial",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "start": "node ."
+    "start": "npx tsc && node index.js"
   },
   "keywords": [],
   "author": "M.D. Walters",

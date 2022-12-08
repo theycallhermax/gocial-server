@@ -3,3 +3,4 @@ node_modules/
 .replit
 .breakpoints
 replit.nix
+index.js
