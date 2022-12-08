@@ -9,7 +9,7 @@ const db = new JSONdb("db.json");
 wss.on("connection", (ws) => {
     ws.on("message", (data: any) => {
         var data: any = JSON.parse(data);
-        console.log(`New message: ${data}`);
+        console.log(`New message: ${JSON.stringify(data)}`);
         if (data.cmd === "post") {
             var users: any = db.get("_users");
             var hasUser: boolean = false;
