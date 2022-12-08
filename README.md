@@ -3,7 +3,7 @@ The server for Gocial
 ## Running
 ```bash
 npm install
-node .
+npm run start
 ```
 
 Then connect to `wss://localhost:3000/` with a WebSocket client.
