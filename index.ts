@@ -15,7 +15,7 @@ wss.on("connection", function connection(ws) {
             var hasUser: boolean = false;
             let i: number = 0;
             for (i < users.length; i++;) {
-                if (users[i].username === JSON.parse(data).username) {
+                if (users[i].username === data.username) {
                     var hasUser: boolean = true;
                     break;
                 }
@@ -39,7 +39,7 @@ wss.on("connection", function connection(ws) {
             var hasUser: boolean = false;
             let i: number = 0;
             for (i < users.length; i++;) {
-                if (users[i].username === JSON.parse(data).username) {
+                if (users[i].username === data.username) {
                     var hasUser: boolean = true;
                     break;
                 }
