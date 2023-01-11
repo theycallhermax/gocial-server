@@ -11,12 +11,12 @@
   "license": "MIT",
   "dependencies": {
     "@types/uuid": "^9.0.0",
-    "@types/ws": "^8.5.3",
+    "@types/ws": "^8.5.4",
     "@types/bcrypt": "^5.0.0",
     "bcrypt": "^5.1.0",
     "simple-json-db": "^2.0.0",
     "uuid": "^9.0.0",
-    "ws": "^8.11.0"
+    "ws": "^8.12.0"
   },
   "devDependencies": {
     "typescript": "^4.9.4"
