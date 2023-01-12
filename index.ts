@@ -6,7 +6,7 @@ import { v4 as uuid } from "uuid";
 const wss = new WebSocketServer({ port: 8080 });
 const db = new JSONdb("db.json");
 
-wss.on("connection", (ws) => {
+wss.on("connection", (ws: any) => {
     ws.on("message", (data: any) => {
         var data: any = JSON.parse(data);
         console.log(`New message: ${JSON.stringify(data)}`);
@@ -27,7 +27,7 @@ wss.on("connection", (ws) => {
                     var home = db.get("_home");
                     home.push({"username": data.username, "content": data.val, "uuid": uuid(), "created": new Date().getTime()});
                     db.set("_home", home);
-                    wss.clients.forEach((client) => {
+                    wss.clients.forEach((client: any) => {
                         client.send(JSON.stringify({"cmd": "message", "username": data.username, "val": data.val}));
                     });
                 } else {
