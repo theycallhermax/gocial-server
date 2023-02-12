@@ -1,87 +1,76 @@
-import { WebSocketServer } from "ws";
+import express from "express";
 import JSONdb from "simple-json-db";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 
-const wss = new WebSocketServer({ port: 8080 });
+const app = express();
 const db = new JSONdb("db.json");
+const port: number = 3000;
 
-wss.on("connection", (ws: any) => {
-    ws.on("message", (data: any) => {
-        var data: any = JSON.parse(data);
-        console.log(`New message: ${JSON.stringify(data)}`);
-        if (data.cmd === "post") {
-            var users: any = db.get("_users");
-            var hasUser: boolean = false;
-            let i: number = 0;
-            for (i < users.length; i++;) {
-                if (users[i].username === data.username) {
-                    var hasUser: boolean = true;
-                    break;
-                }
-            }
-            
-            bcrypt.compare(data.password, users[i].password, (err, result) => {
+/**
+* Checks to see if the specified user exists
+* @param user The username to check if the user exists
+*/
+function hasUser(user: string): null | Object {
+    let users = db.get("_users");
+    let i: number = 0;
+    for (i < users.length; i++;) {
+        if (users[i].username === user) {
+            return users[i];
+        }
+    }
+    return null;
+}
+
+app.get("/", (req, res) => {
+    res.send({
+        "users": db.get("_users").length,
+        "posts": db.get("_home").length
+    });
+});
+
+app.get("/home", (req, res) => {
+    res.send(db.get("_home"));
+});
+
+/* Do not uncomment for now
+app.post("/home/post", (req, res) => {
+    let home: Object[] = db.get("_home");
+    let user = hasUser(req.header);
+    try {
+        if (user) {
+            // @ts-ignore
+            bcrypt.compare(req.body.password, user.password, (err, result) => {
                 if (result == true) {
-                    ws.send(JSON.stringify({"cmd": "ok"}));
-                    var home = db.get("_home");
-                    home.push({"username": data.username, "content": data.val, "uuid": uuid(), "created": new Date().getTime()});
-                    db.set("_home", home);
-                    wss.clients.forEach((client: any) => {
-                        client.send(JSON.stringify({"cmd": "message", "username": data.username, "val": data.val}));
+                    home.push({
+                        "username": req.body.username,
+                        "content": req.body.content,
+                        "uuid": uuid(),
+                        "created": new Date().getTime()
                     });
+                    db.set("_home", home);
                 } else {
-                    ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Username or Password"}));  
+                    res.send({
+                        "error": true,
+                        "message": "Invalid Password"
+                    });
                 }
             });
-        } else if (data.cmd === "signup") {
-            var users: any = db.get("_users");
-            var hasUser: boolean = false;
-            let i: number = 0;
-            for (i < users.length; i++;) {
-                if (users[i].username === data.username) {
-                    var hasUser: boolean = true;
-                    break;
-                }
-            }
-            
-            if (hasUser) {
-                ws.send(JSON.stringify({"cmd": "status", "val": "Account Exists"}));
-            } else {
-                bcrypt.hash(data.password, 14, (err, hash) => {
-                    users.push({"username": data.username, "password": hash, "uuid": uuid(), "created": new Date().getTime()});
-                    db.set("_users", users);
-                    ws.send(JSON.stringify({"cmd": "ok"}));
-                });
-            }
-        } else if (data.cmd === "login") {
-            var users: any = db.get("_users");
-            var hasUser: boolean = false;
-            let i: number = 0;
-            for (i < users.length; i++;) {
-                if (users[i].username === data.username) {
-                    var hasUser = true;
-                    break;
-                }
-            }
-            
-            if (!(hasUser)) {
-                ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Username or Password"}));
-            } else {
-                bcrypt.compare(data.password, db.get("_users")[i].password, (err, result) => {
-                    if (result == true) {
-                        ws.send(JSON.stringify({"cmd": "ok"}));
-                    } else {
-                        ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Username or Password"}));  
-                    }
-                });
-            }
-        } else if (data.cmd === "ping") {
-            ws.send(JSON.stringify({"cmd": "ping", "val": "OK"}));
-        } else if (data.cmd === "home") {
-            ws.send(JSON.stringify({"cmd": "home", "val": db.get("_home"), "len": (db.get("_home").length - 1)}));
         } else {
-            ws.send(JSON.stringify({"cmd": "error", "val": "Invalid Request"}));
+            res.send({
+                "error": true,
+                "message": "Invalid Username"
+            });
         }
-    });
+    } catch(e) {
+        res.status(500).send({
+            "error": true,
+            "message": "Internal Server Error"
+        });
+    }
+});
+*/
+
+app.listen(port, () => {
+    console.log(`Gocial server listening on port ${port}`);
 });
