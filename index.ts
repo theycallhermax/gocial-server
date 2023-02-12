@@ -11,7 +11,7 @@ const port: number = 3000;
 * Checks to see if the specified user exists
 * @param user The username to check if the user exists
 */
-function hasUser(user: string): null | Object {
+function hasUser(user: any): null | Object {
     let users = db.get("_users");
     let i: number = 0;
     for (i < users.length; i++;) {
@@ -33,22 +33,24 @@ app.get("/home", (req, res) => {
     res.send(db.get("_home"));
 });
 
-/* Do not uncomment for now
 app.post("/home/post", (req, res) => {
-    let home: Object[] = db.get("_home");
-    let user = hasUser(req.header);
+    let home = db.get("_home");
+    let user = hasUser(req.headers.username);
     try {
         if (user) {
             // @ts-ignore
-            bcrypt.compare(req.body.password, user.password, (err, result) => {
+            bcrypt.compare(req.headers.password, user.password, (err, result) => {
                 if (result == true) {
                     home.push({
-                        "username": req.body.username,
-                        "content": req.body.content,
+                        "username": req.headers.username,
+                        "content": req.headers.content,
                         "uuid": uuid(),
                         "created": new Date().getTime()
                     });
                     db.set("_home", home);
+                    res.send({
+                        "error": false
+                    });
                 } else {
                     res.send({
                         "error": true,
@@ -69,7 +71,6 @@ app.post("/home/post", (req, res) => {
         });
     }
 });
-*/
 
 app.listen(port, () => {
     console.log(`Gocial server listening on port ${port}`);
