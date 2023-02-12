@@ -23,14 +23,14 @@ function hasUser(user: any): null | Object {
 }
 
 app.get("/", (req, res) => {
-    res.send({
+    res.status(200).send({
         "users": db.get("_users").length,
         "posts": db.get("_home").length
     });
 });
 
 app.get("/home", (req, res) => {
-    res.send(db.get("_home"));
+    res.status(200).send(db.get("_home"));
 });
 
 app.post("/home/post", (req, res) => {
@@ -48,11 +48,11 @@ app.post("/home/post", (req, res) => {
                         "created": new Date().getTime()
                     });
                     db.set("_home", home);
-                    res.send({
+                    res.status(201).send({
                         "error": false
                     });
                 } else {
-                    res.send({
+                    res.status(403).send({
                         "error": true,
                         "message": "Invalid Password"
                     });
