@@ -35,15 +35,15 @@ app.get("/home", (req, res) => {
 
 app.post("/home/post", (req, res) => {
     let home = db.get("_home");
-    let user = hasUser(req.headers.username);
+    let user = hasUser(req.headers["username"]);
     try {
         if (user) {
             // @ts-ignore
             bcrypt.compare(req.headers.password, user.password, (err, result) => {
                 if (result == true) {
                     home.push({
-                        "username": req.headers.username,
-                        "content": req.headers.content,
+                        "username": req.headers["username"],
+                        "content": req.headers["content"],
                         "uuid": uuid(),
                         "created": new Date().getTime()
                     });
