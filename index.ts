@@ -20,6 +20,11 @@ app.get("/home", (req, res) => {
     res.end();
 });
 
+app.get("/home/post", (req, res) => {
+    res.status(404).send({ "code": 404 });
+    res.end();
+});
+
 app.listen(port, () => {
     console.log(`Gocial server listening on port ${port}`);
 });
