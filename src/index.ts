@@ -22,7 +22,7 @@ app.get("/home", (req, res) => {
     res.end();
 });
 
-app.get("/home/post", (req, res) => {
+app.post("/home/post", (req, res) => {
     if (user_exists(req.body.username, db)) {
         let user: object = get_user(req.body.username, db);
 
