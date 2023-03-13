@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/home", (req, res) => {
-    res.status(200).send(db.get("_home"));
+    res.status(200).send({ "code": 200, "home": db.get("_home") });
     res.end();
 });
 
@@ -41,12 +41,12 @@ app.post("/home/post", body_parser.json(), (req, res) => {
                 res.status(201).send({ "code": 201 });
                 res.end();
             } else {
-                res.status(401).send({ "code": 401 });
+                res.status(401).send({ "code": 401, "message": "Invalid Password" });
                 res.end();
             }
         });
     } else {
-        res.status(401).send({ "code": 401 });
+        res.status(401).send({ "code": 401, "message": "Invalid Username" });
         res.end();
     }
 });
