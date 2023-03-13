@@ -10,8 +10,6 @@ const app = express();
 const db = new JSONdb("db.json");
 const port = 3000;
 
-app.use(body_parser.json());
-
 app.get("/", (req, res) => {
     res.status(200).send({
         "users": db.get("_users").length,
@@ -25,7 +23,7 @@ app.get("/home", (req, res) => {
     res.end();
 });
 
-app.post("/home/post", (req, res) => {
+app.post("/home/post", body_parser.json(), (req, res) => {
     res.json(req.body);
     if (user_exists(req.body.username, db)) {
         const user: object = get_user(req.body.username, db);
