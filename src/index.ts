@@ -3,7 +3,7 @@ import express from "express";
 import JSONdb from "simple-json-db";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
-import { get_user, user_exists } from "../lib/utils";
+import { get_user, user_exists } from "../lib/utils.js";
 
 const app = express();
 const db = new JSONdb("db.json");
