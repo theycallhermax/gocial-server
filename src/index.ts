@@ -38,6 +38,8 @@ app.post("/home/post", body_parser.json(), (req, res) => {
                     "created": new Date().getTime()
                 });
 
+                db.set("_home", home);
+
                 res.status(201).send({ "code": 201 });
                 res.end();
             } else {
@@ -60,6 +62,36 @@ app.get("/users/:id", (req, res) => {
         res.end();
     } else {
         res.status(404).send({ "code": 404 });
+        res.end();
+    }
+});
+
+app.delete("/home/delete", body_parser.json(), (req, res) => {
+    if (user_exists(req.body.username, db)) {
+        const user: object = get_user(req.body.username, db);
+
+        bcrypt.compare(req.body.password, user.password, (err: Error, result: boolen) => {
+            if (result === true) {
+                const home: object[] = db.get("_home");
+
+                for (let i in home) {
+                    if (req.body.uuid === home[i].uuid) {
+                        home.splice(i, 1);
+                        db.set("_home", home);
+                        res.status(200).send({ "code": 200 });
+                        res.end();
+                    }
+                }
+
+                res.status(404).send({ "code": 404 });
+                res.end();
+            } else {
+                res.status(401).send({ "code": 401, "message": "Invalid Password" });
+                res.end();
+            }
+        });
+    } else {
+        res.status(401).send({ "code": 401, "message": "Invalid Username" });
         res.end();
     }
 });
