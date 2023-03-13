@@ -24,11 +24,11 @@ app.get("/home", (req, res) => {
 
 app.post("/home/post", (req, res) => {
     if (user_exists(req.body.username, db)) {
-        let user: object = get_user(req.body.username, db);
+        const user: object = get_user(req.body.username, db);
 
         bcrypt.compare(req.body.password, user.password, (err: Error, result: boolen) => {
             if (result === true) {
-                let home: object[] = db.get("_home");
+                const home: object[] = db.get("_home");
 
                 home.push({
                     "username": req.body.username,

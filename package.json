@@ -5,7 +5,7 @@
   "main": "./src/index.js",
   "type": "module",
   "scripts": {
-    "start": "npx tsc && node .",
+    "start": "tsc && node .",
     "lint": "eslint ."
   },
   "keywords": [],
