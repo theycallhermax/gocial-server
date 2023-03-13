@@ -4,10 +4,13 @@ import JSONdb from "simple-json-db";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 import { get_user, user_exists } from "../lib/utils.js";
+import body_parser from "body-parser";
 
 const app = express();
 const db = new JSONdb("db.json");
 const port = 3000;
+
+app.use(body_parser.json());
 
 app.get("/", (req, res) => {
     res.status(200).send({
@@ -23,6 +26,7 @@ app.get("/home", (req, res) => {
 });
 
 app.post("/home/post", (req, res) => {
+    res.json(req.body);
     if (user_exists(req.body.username, db)) {
         const user: object = get_user(req.body.username, db);
 
