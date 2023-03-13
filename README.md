@@ -12,9 +12,11 @@ Shows the current stats
 Shows all of the home posts
 ### `/home/post`
 Post to home
-#### Headers
-```
-username: [username here]
-password: [password here]
-content: [post content here]
+#### Body
+```json
+{
+    "username": "[username here]",
+    "password": "[password here]",
+    "content": "[post content here]"
+}
 ```
