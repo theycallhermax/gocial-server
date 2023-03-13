@@ -52,9 +52,8 @@ app.post("/home/post", body_parser.json(), (req, res) => {
 });
 
 app.get("/users/:id", (req, res) => {
-    const user: object = get_user(req.params.user, db);
-
-    if (user) {
+    if (user_exists(req.params.user, db)) {
+        const user: object = get_user(req.params.user, db);
         delete user.password; // Not today, hackers!
         user.code = 200;
         res.status(200).send(user);
