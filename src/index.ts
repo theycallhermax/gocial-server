@@ -24,7 +24,6 @@ app.get("/home", (req, res) => {
 });
 
 app.post("/home/post", body_parser.json(), (req, res) => {
-    res.json(req.body);
     if (user_exists(req.body.username, db)) {
         const user: object = get_user(req.body.username, db);
 
