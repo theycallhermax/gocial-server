@@ -51,6 +51,20 @@ app.post("/home/post", body_parser.json(), (req, res) => {
     }
 });
 
+app.get("/users/:id", (req, res) => {
+    const user: object = get_user(req.params.user, db);
+
+    if (user) {
+        delete user.password; // Not today, hackers!
+        user.code = 200;
+        res.status(200).send(user);
+        res.end();
+    } else {
+        res.status(404).send({ "code": 404 });
+        res.end();
+    }
+});
+
 app.listen(port, () => {
     console.log(`Gocial server listening on port ${port}`);
 });
