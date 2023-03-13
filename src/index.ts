@@ -1,11 +1,13 @@
+// @ts-nocheck
 import express from "express";
 import JSONdb from "simple-json-db";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
+import { get_user, user_exists } from "../lib/utils";
 
 const app = express();
 const db = new JSONdb("db.json");
-const port: number = 3000;
+const port = 3000;
 
 app.get("/", (req, res) => {
     res.status(200).send({
@@ -21,8 +23,31 @@ app.get("/home", (req, res) => {
 });
 
 app.get("/home/post", (req, res) => {
-    res.status(404).send({ "code": 404 });
-    res.end();
+    if (user_exists(req.body.username, db)) {
+        let user: object = get_user(req.body.username, db);
+
+        bcrypt.compare(req.body.password, user.password, (err: Error, result: boolen) => {
+            if (result === true) {
+                let home: object[] = db.get("_home");
+
+                home.push({
+                    "username": req.body.username,
+                    "content": req.body.content,
+                    "uuid": uuid(),
+                    "created": new Date().getTime()
+                });
+
+                res.status(201).send({ "code": 201 });
+                res.end();
+            } else {
+                res.status(401).send({ "code": 401 });
+                res.end();
+            }
+        });
+    } else {
+        res.status(401).send({ "code": 401 });
+        res.end();
+    }
 });
 
 app.listen(port, () => {

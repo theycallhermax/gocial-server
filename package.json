@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "The server for Gocial",
   "main": "./src/index.js",
+  "type": "module",
   "scripts": {
-    "start": "npx tsc && node ."
+    "start": "npx tsc && node .",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "Gocial Group",
@@ -21,6 +23,9 @@
     "ws": "^8.12.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.54.1",
+    "@typescript-eslint/parser": "^5.54.1",
+    "eslint": "^8.36.0",
     "typescript": "^4.9.5"
   },
   "repository": {
